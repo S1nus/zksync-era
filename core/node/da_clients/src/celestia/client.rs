@@ -7,6 +7,8 @@ use std::{
     time,
 };
 
+use alloy_primitives::{Bytes, FixedBytes, Uint};
+use alloy_sol_types::{SolType, SolValue};
 use async_trait::async_trait;
 use celestia_types::{nmt::Namespace, AppVersion, Blob, Height};
 use subxt_signer::ExposeSecret;
@@ -31,6 +33,7 @@ use crate::{
     utils::{to_non_retriable_da_error, to_retriable_da_error},
 };
 
+
 use crate::celestia::blobstream::{
     find_block_range, get_latest_blobstream_relayed_height, AttestationProof, BinaryMerkleProof,
     DataRootInclusionProofResponse, DataRootTuple, TendermintRPCClient,
@@ -45,7 +48,6 @@ use eq_sdk::{
     EqClient, KeccakInclusionToDataRootProofOutput,
 };
 use sp1_sdk::SP1ProofWithPublicValues;
-
 /// An implementation of the `DataAvailabilityClient` trait that interacts with the Celestia network.
 #[derive(Clone)]
 pub struct CelestiaClient {
@@ -138,9 +140,9 @@ impl CelestiaClient {
             InclusionResponseStatus::ZkpFinished => match response_data {
                 Some(InclusionResponseValue::Proof(proof)) => proof,
                 _ => {
-                    return Err(DAError { 
+                    return Err(DAError {
                         error: anyhow::anyhow!("Complete status should be accompanied by a Proof, eq-service is broken"), 
-                        is_retriable: false 
+                        is_retriable: false
                     });
                 }
             },
@@ -269,7 +271,7 @@ impl DataAvailabilityClient for CelestiaClient {
             .eth_client
             .block_number()
             .await
-            .map_err(|e| to_retriable_da_error(e))?;
+            .map_err(to_retriable_da_error)?;
 
         let latest_blobstream_height =
             get_latest_blobstream_relayed_height(&self.eth_client, &self.blobstream_contract).await;

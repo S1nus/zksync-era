@@ -6,11 +6,11 @@
 use alloy_sol_types::sol;
 use reqwest::{Client, Error as ReqwestError};
 use serde::Deserialize;
-use zksync_basic_types::ethabi::decode;
-use zksync_basic_types::ethabi::{Contract, Event, ParamType};
-use zksync_basic_types::web3::{BlockId, BlockNumber, CallRequest, FilterBuilder, Log};
-use zksync_basic_types::H160;
-use zksync_basic_types::{H256, U256};
+use zksync_basic_types::{
+    ethabi::{decode, Contract, Event, ParamType},
+    web3::{BlockId, BlockNumber, CallRequest, FilterBuilder, Log},
+    H160, H256, U256,
+};
 use zksync_eth_client::{
     clients::{DynClient, L1},
     EthInterface,
@@ -148,9 +148,9 @@ impl DataCommitmentStored {
                 .clone()
                 .into_uint()
                 .unwrap(),
-            start_block: U256::from_big_endian(&log.topics[1].as_bytes()),
-            end_block: U256::from_big_endian(&log.topics[2].as_bytes()),
-            data_commitment: H256::from_slice(&log.topics[3].as_bytes()),
+            start_block: U256::from_big_endian(log.topics[1].as_bytes()),
+            end_block: U256::from_big_endian(log.topics[2].as_bytes()),
+            data_commitment: H256::from_slice(log.topics[3].as_bytes()),
         }
     }
 }
