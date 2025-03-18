@@ -13690,7 +13690,6 @@ dependencies = [
  "blake2b_simd",
  "bytes",
  "celestia-types",
- "eq-common",
  "eq-sdk",
  "flate2",
  "futures 0.3.31",

@@ -9,7 +9,7 @@ use std::{
 
 use async_trait::async_trait;
 use celestia_types::{blob::Commitment, nmt::Namespace, AppVersion, Blob, Height};
-use eq_common::{KeccakInclusionToDataRootProofInput, KeccakInclusionToDataRootProofOutput};
+use eq_sdk::{KeccakInclusionToDataRootProofInput, KeccakInclusionToDataRootProofOutput};
 use subxt_signer::ExposeSecret;
 use tonic::transport::Endpoint;
 use zksync_basic_types::ethabi::decode;
