@@ -50,19 +50,23 @@ pub async fn deploy_l1(
     deploy_config.save(shell, deploy_config_path)?;
     logger::info(format!("Deploy config: {:?}", deploy_config));
 
+    logger::info("new forge");
     let mut forge = Forge::new(&config.path_to_l1_foundry())
         .script(&DEPLOY_ECOSYSTEM_SCRIPT_PARAMS.script(), forge_args.clone())
         .with_ffi()
         .with_rpc_url(l1_rpc_url.to_string());
 
+    logger::info("with slow");
     if config.l1_network == L1Network::Localhost {
         // It's a kludge for reth, just because it doesn't behave properly with large amount of txs
         forge = forge.with_slow();
     }
 
     if let Some(address) = sender {
+        logger::info(format!("address is set to: {}", address));
         forge = forge.with_sender(address);
     } else {
+        logger::info("address not set, filling forge private key");
         forge = fill_forge_private_key(
             forge,
             wallets_config.deployer.as_ref(),
@@ -71,8 +75,11 @@ pub async fn deploy_l1(
     }
 
     if broadcast {
+        logger::info("broadcast is set, setting forge to broadcast");
         forge = forge.with_broadcast();
         check_the_balance(&forge).await?;
+    } else {
+        logger::info("broadcast is not set.");
     }
 
     logger::info("Running forge script");

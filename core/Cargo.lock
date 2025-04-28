@@ -3313,7 +3313,7 @@ dependencies = [
 
 [[package]]
 name = "eq-common"
-version = "0.1.4"
+version = "0.1.6"
 dependencies = [
  "bincode",
  "celestia-types",
@@ -3328,7 +3328,7 @@ dependencies = [
 
 [[package]]
 name = "eq-sdk"
-version = "0.1.4"
+version = "0.1.6"
 dependencies = [
  "base64 0.22.1",
  "celestia-types",
