@@ -7,7 +7,7 @@ use zksync_basic_types::pubdata_da::PubdataSendingMode;
 
 use crate::{
     consensus::{ConsensusConfigPatch, ConsensusGenesisSpecs},
-    da::AvailConfig,
+    da::{AvailConfig, CelestiaConfig},
     raw::{PatchedConfig, RawConfig},
     ChainConfig, ObjectStoreConfig, ObjectStoreMode,
 };
