@@ -1,5 +1,5 @@
 use xshell::Shell;
-use zkstack_cli_common::forge::{Forge, ForgeScriptArgs};
+use zkstack_cli_common::{logger, forge::{Forge, ForgeScriptArgs}};
 use zkstack_cli_config::{
     forge_interface::{
         deploy_ecosystem::{
