@@ -27,11 +27,16 @@ pub async fn deploy_l1(
     support_l2_legacy_shared_bridge_test: bool,
 ) -> anyhow::Result<ContractsConfig> {
     let deploy_config_path = DEPLOY_ECOSYSTEM_SCRIPT_PARAMS.input(&config.link_to_code);
+    logger::info(format!("Deploy config path: {}", deploy_config_path.to_string_lossy()));
     let genesis_config_path = config.get_default_configs_path().join(GENESIS_FILE);
+    logger::info(format!("Genesis config path: {}", genesis_config_path.to_string_lossy()));
     let default_genesis_config = GenesisConfig::read(shell, genesis_config_path).await?;
+    logger::info(format!("Default genesis config: {:?}", default_genesis_config));
     let default_genesis_input = GenesisInput::new(&default_genesis_config)?;
-
+    logger::info(format!("Default genesis input: {:?}", default_genesis_input));
     let wallets_config = config.get_wallets()?;
+    logger::info(format!("Wallets config: {:?}", wallets_config));
+
     // For deploying ecosystem we only need genesis batch params
     let deploy_config = DeployL1Config::new(
         &default_genesis_input,
@@ -43,6 +48,7 @@ pub async fn deploy_l1(
         support_l2_legacy_shared_bridge_test,
     );
     deploy_config.save(shell, deploy_config_path)?;
+    logger::info(format!("Deploy config: {:?}", deploy_config));
 
     let mut forge = Forge::new(&config.path_to_l1_foundry())
         .script(&DEPLOY_ECOSYSTEM_SCRIPT_PARAMS.script(), forge_args.clone())
@@ -69,7 +75,9 @@ pub async fn deploy_l1(
         check_the_balance(&forge).await?;
     }
 
+    logger::info("Running forge script");
     forge.run(shell)?;
+    logger::info("Forge script finished");
 
     let script_output = DeployL1Output::read(
         shell,
