@@ -18,6 +18,7 @@ use xshell::{cmd, Shell};
 use crate::{
     cmd::{Cmd, CmdResult},
     ethereum::create_ethers_client,
+    logger,
 };
 
 /// Forge is a wrapper around the forge binary.
@@ -56,6 +57,7 @@ pub struct ForgeScript {
 impl ForgeScript {
     /// Run the forge script command.
     pub fn run(mut self, shell: &Shell) -> anyhow::Result<()> {
+        logger::info("running forge script");
         let _dir_guard = shell.push_dir(&self.base_path);
         let script_path = self.script_path.as_os_str();
         let args_no_resume = self.args.build();

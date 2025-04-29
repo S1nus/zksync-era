@@ -258,7 +258,7 @@ async fn deploy_ecosystem_inner(
     l1_rpc_url: String,
     support_l2_legacy_shared_bridge_test: bool,
 ) -> anyhow::Result<ContractsConfig> {
-    let spinner = Spinner::new(MSG_DEPLOYING_ECOSYSTEM_CONTRACTS_SPINNER);
+    //let spinner = Spinner::new(MSG_DEPLOYING_ECOSYSTEM_CONTRACTS_SPINNER);
     let contracts_config = deploy_l1(
         shell,
         &forge_args,
@@ -270,7 +270,7 @@ async fn deploy_ecosystem_inner(
         support_l2_legacy_shared_bridge_test,
     )
     .await?;
-    spinner.finish();
+    //spinner.finish();
 
     accept_owner(
         shell,
