@@ -4385,7 +4385,9 @@ dependencies = [
 
 [[package]]
 name = "eq-common"
-version = "0.1.12"
+version = "0.1.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e0616f96acbab3d2da6abc416560f3c7fb96a3b18f58cebefdf2191b634088ec"
 dependencies = [
  "celestia-types",
  "prometheus-client 0.24.0",
@@ -4399,7 +4401,9 @@ dependencies = [
 
 [[package]]
 name = "eq-sdk"
-version = "0.1.12"
+version = "0.1.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "687e60aba66fb81446607c84e18b149d6f357364611c733a5d6df6eb359e45ec"
 dependencies = [
  "base64 0.22.1",
  "celestia-types",

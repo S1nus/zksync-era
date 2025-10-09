@@ -13,6 +13,8 @@ pub struct CelestiaConfig {
     pub timeout: Duration,
     #[config(nest)]
     pub inclusion_verification: Option<CelestiaInclusionVerificationConfig>,
+    #[config(default_t = false)]
+    pub mock_blobstream: bool,
 }
 
 #[derive(Clone, Debug, PartialEq, DescribeConfig, DeserializeConfig)]

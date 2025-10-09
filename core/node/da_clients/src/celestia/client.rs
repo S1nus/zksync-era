@@ -308,6 +308,21 @@ impl CelestiaClient {
         })
     }
 
+    async fn create_mock_attestation_proof(&self) -> Result<AttestationProof, DAError> {
+        Ok(AttestationProof {
+            tuple_root_nonce: U256::from(0),
+            tuple: DataRootTuple {
+                height: U256::from(0),
+                data_root: vec![],
+            },
+            proof: BinaryMerkleProof {
+                side_nodes: vec![],
+                key: U256::from(0),
+                num_leaves: U256::from(0),
+            },
+        })
+    }
+
     async fn fetch_data_root_inclusion_proof(
         &self,
         tm_rpc_client: &TendermintRPCClient,
@@ -407,26 +422,40 @@ impl DataAvailabilityClient for CelestiaClient {
         tracing::debug!("Checking blobstream for height: {}", target_height);
 
         // Step 2: Find block range
-        let block_range = self
-            .find_blobstream_block_range(
-                target_height,
-                latest_blobstream_height,
-                eth_current_height,
-            )
-            .await?;
+        // if mock_blobstream is true, we don't need to find the block range
+        let (from, to, proof_nonce) = if !self.config.mock_blobstream {
+            let block_range = self
+                .find_blobstream_block_range(
+                    target_height,
+                    latest_blobstream_height,
+                    eth_current_height,
+                )
+                .await?;
 
-        let (from, to, proof_nonce) = match block_range {
-            Some(range) => range,
-            None => {
-                tracing::debug!("Blobstream is still waiting for height: {}", target_height);
-                return Ok(None);
-            }
+            let (from, to, proof_nonce) = match block_range {
+                Some(range) => range,
+                None => {
+                    tracing::debug!("Blobstream is still waiting for height: {}", target_height);
+                    return Ok(None);
+                }
+            };
+            (from, to, proof_nonce)
+        } else {
+            (
+                U256::from(target_height),
+                U256::from(target_height - 100),
+                U256::from(target_height + 100),
+            )
         };
 
         // Step 3: Get proof data
-        let attestation_proof = self
-            .create_attestation_proof(target_height, from, to, proof_nonce)
-            .await?;
+        // if mock_blobstream is true, we use the mock attestation proof
+        let attestation_proof = if !self.config.mock_blobstream {
+            self.create_attestation_proof(target_height, from, to, proof_nonce)
+                .await?
+        } else {
+            self.create_mock_attestation_proof().await?
+        };
 
         // Step 4: Get proof data for the blob
         let proof_data = match self.get_eq_proof(blob_id).await? {
