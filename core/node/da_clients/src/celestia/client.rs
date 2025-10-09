@@ -309,20 +309,18 @@ impl CelestiaClient {
     }
 
     async fn create_mock_attestation_proof(&self) -> Result<AttestationProof, DAError> {
-        Ok(
-            AttestationProof {
-                tuple_root_nonce: U256::from(0),
-                tuple: DataRootTuple { 
-                    height: U256::from(0),
-                    data_root: vec![],
-                },
-                proof: BinaryMerkleProof {
-                    side_nodes: vec![],
-                    key: U256::from(0),
-                    num_leaves: U256::from(0),
-                }
-            }
-        )
+        Ok(AttestationProof {
+            tuple_root_nonce: U256::from(0),
+            tuple: DataRootTuple {
+                height: U256::from(0),
+                data_root: vec![],
+            },
+            proof: BinaryMerkleProof {
+                side_nodes: vec![],
+                key: U256::from(0),
+                num_leaves: U256::from(0),
+            },
+        })
     }
 
     async fn fetch_data_root_inclusion_proof(
@@ -443,15 +441,18 @@ impl DataAvailabilityClient for CelestiaClient {
             };
             (from, to, proof_nonce)
         } else {
-            (U256::from(target_height), U256::from(target_height - 100), U256::from(target_height + 100))
+            (
+                U256::from(target_height),
+                U256::from(target_height - 100),
+                U256::from(target_height + 100),
+            )
         };
 
         // Step 3: Get proof data
         // if mock_blobstream is true, we use the mock attestation proof
         let attestation_proof = if !self.config.mock_blobstream {
-            self
-            .create_attestation_proof(target_height, from, to, proof_nonce)
-            .await?
+            self.create_attestation_proof(target_height, from, to, proof_nonce)
+                .await?
         } else {
             self.create_mock_attestation_proof().await?
         };
